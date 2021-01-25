@@ -22,12 +22,26 @@ export default function HomeScreen() {
 
   const [countries, setCountries] = useState([])
   const [isLoaded, setIsLoaded] = useState(true)
-  const [searchOption, setSearchOption] = useState("name")
+  const [searchOption, setSearchOption] = useState("Ordinary Drink")
+  const [categoriesOptions, setCategoriesOptions] = useState([])
 
+  
+  
+
+
+  async function getCategories() {
+    const categories = await api.get("list.php?c=list");
+    categories = categories["drinks"]
+    const listCategories =  categories.map((item) => {
+      return (item[strCategory])
+    })
+
+    setCategoriesOptions(listCategories)
+  }
   const navigation = useNavigation();
 
   useEffect(() => {
-    
+    getCategories()
   },[])
 
   async function setCountry(text) {
@@ -80,7 +94,10 @@ export default function HomeScreen() {
       
   }
 
+  
+
   return (
+    
     <View style={styles.container}>
       <StatusBar style="auto" />
       <Title/>
@@ -90,19 +107,24 @@ export default function HomeScreen() {
           onChangeText={text => setCountry(text)}
           placeholder="Digite aqui"
         />
+        
         <View style={styles.pickerView}>
           <Picker
             selectedValue= {searchOption}
             style={{width: "100%", fontSize: 23}}
             onValueChange={(itemValue)=>setSearchOption(itemValue)}
           >
-            <Picker.Item  label="Nome" value="name"/>
-            <Picker.Item  label="Capital" value="capital"/>
-            <Picker.Item  label="Região" value="region"/>
-            <Picker.Item  label="Moeda" value="currency"/>
+            {
+              categoriesOptions.map((item)=>{
+                return <Item value={item} name={item}/>
+              })
+            }
+            
+            
     
           </Picker>
         </View>
+        
       </View>
         
       <ScrollView style={styles.list}>
