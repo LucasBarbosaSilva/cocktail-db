@@ -24,84 +24,82 @@ export default function HomeScreen() {
   const [isLoaded, setIsLoaded] = useState(true)
   const [searchOption, setSearchOption] = useState("Ordinary Drink")
   const [categoriesOptions, setCategoriesOptions] = useState([])
-
-  
-  
-
+  const [text, setText] = useState([]);
 
   async function getCategories() {
-    const categories = await api.get("list.php?c=list");
-    categories = categories["drinks"]
-    const listCategories =  categories.map((item) => {
-      return (item[strCategory])
-    })
-
-    setCategoriesOptions(listCategories)
+    const categories = await api.get("positions.json", 
+      {
+        params: {
+          description: "python"
+        }
+      }
+    ).then(response => { setText(categories)});
   }
   const navigation = useNavigation();
 
   useEffect(() => {
-    getCategories()
+    getCategories();
   },[])
 
-  async function setCountry(text) {
-    setIsLoaded(false)
-    let textLower = text.toLowerCase()
-    try{
+  // async function setCountry(text) {
+  //   setIsLoaded(false)
+  //   let textLower = text.toLowerCase()
+  //   try{
 
-      if(searchOption=='region'){
-        const resp = await api.get("all")
-        const data = resp.data.filter(c=>c.region.toLowerCase().includes(textLower))
-        setCountries(data)
+  //     if(searchOption=='region'){
+  //       const resp = await api.get("all")
+  //       const data = resp.data.filter(c=>c.region.toLowerCase().includes(textLower))
+  //       setCountries(data)
 
-      }else if(searchOption=='currency'){
-        const resp = await api.get("all")
-        const data = resp.data.filter(c=>{
-          //se currencies daquele país contem algo do texto que está sendo escrito
-          let contem = false 
+  //     }else if(searchOption=='currency'){
+  //       const resp = await api.get("all")
+  //       const data = resp.data.filter(c=>{
+  //         //se currencies daquele país contem algo do texto que está sendo escrito
+  //         let contem = false 
           
-          //percorrendo cada uma das moedas que um país pode ter
-          c.currencies.forEach((elem)=>{ 
+  //         //percorrendo cada uma das moedas que um país pode ter
+  //         c.currencies.forEach((elem)=>{ 
 
-            //verificando se o texto está contido em algum dos atributos daquela moeda (code, name ou symbol)
-            if((elem.code && elem.code.toLowerCase().includes(textLower))
-              || (elem.name && elem.name.toLowerCase().includes(textLower))
-              || (elem.symbol && elem.symbol.toLowerCase().includes(textLower))){
+  //           //verificando se o texto está contido em algum dos atributos daquela moeda (code, name ou symbol)
+  //           if((elem.code && elem.code.toLowerCase().includes(textLower))
+  //             || (elem.name && elem.name.toLowerCase().includes(textLower))
+  //             || (elem.symbol && elem.symbol.toLowerCase().includes(textLower))){
 
-                contem = true
-            }
-          })
+  //               contem = true
+  //           }
+  //         })
           
           
-          return contem
+  //         return contem
 
-        })
+  //       })
 
         
-        setCountries(data)
+  //       setCountries(data)
 
-      }else{ //para o restante das pesquisas
-        const resp = await api.get(`${searchOption}/${textLower}`)
-        setCountries(resp.data)
-      }
+  //     }else{ //para o restante das pesquisas
+  //       const resp = await api.get(`${searchOption}/${textLower}`)
+  //       setCountries(resp.data)
+  //     }
 
 
-    }catch(e){ //caso a pesquisa não exista ou dê algum erro
-      setCountries([])
-    }finally{ //parar de mostrar o ícone carregando...
-      setIsLoaded(true)
-    }
+  //   }catch(e){ //caso a pesquisa não exista ou dê algum erro
+  //     setCountries([])
+  //   }finally{ //parar de mostrar o ícone carregando...
+  //     setIsLoaded(true)
+  //   }
       
-  }
+  // }
 
   
-
+  console.debug("text");
   return (
     
     <View style={styles.container}>
       <StatusBar style="auto" />
       <Title/>
       <View style={styles.search}>
+        <Text>{`${text}`}</Text>
         <TextInput
           style={styles.input}
           onChangeText={text => setCountry(text)}

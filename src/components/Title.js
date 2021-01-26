@@ -20,7 +20,7 @@ export default function Title({action}){
       <View style={styles.content}>
         {action && (<RectButton onPress={handleGoBack}><Image style={styles.icons} source={arrow}/></RectButton>)}
         <View style={styles.title}>
-          <Text style={styles.titleText}>Que país é esse?</Text>
+          <Text style={styles.titleText}>Escolha um drink!</Text>
           <Image source={globe} style={[styles.iconTitle]}/>
         </View>
         
